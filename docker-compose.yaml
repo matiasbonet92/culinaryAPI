@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    command: npm start
+    develop:
+      watch: 
+      - action: rebuild
+        path: .
+  db:
+    image: postgres
+    env_file:
+      - .env
+    #cargar un archivo SQL inicial desde la carpeta config
+    volumes:
+      - ./src/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  pgdata:
